@@ -1,0 +1,20 @@
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8081/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+        - "hystrix.stream"
+        - "refresh"
+        - "info"
+        - "health"
+
+timofei:
+  test:
+    message: "Message from the config server (COMMON)"

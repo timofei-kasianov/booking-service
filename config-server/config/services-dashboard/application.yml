@@ -1,0 +1,6 @@
+server:
+  port: 8082
+
+turbine:
+  app-config: api-gateway, accommodation-service, reservation-service, geo-location-service
+  cluster-name-expression: new String("default")

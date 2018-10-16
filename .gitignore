@@ -1,6 +1,6 @@
-target/
-
+target
 .idea
-*.iws
-*.iml
-*.ipr
+**/*.iml
+**/*.iws
+**/*.ipr
+.classpath
