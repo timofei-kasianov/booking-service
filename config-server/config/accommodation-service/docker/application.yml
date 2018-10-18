@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      host: host.docker.internal
+      port: 27017
+      database: accommodations
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 3000
+        readTimeout: 3000
+
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 12500

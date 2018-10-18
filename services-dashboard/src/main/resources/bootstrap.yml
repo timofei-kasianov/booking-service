@@ -4,3 +4,13 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
+
+---
+
+spring:
+  application:
+    name: services-dashboard
+  profiles: docker
+  cloud:
+    config:
+      uri: http://booking-config-server:8888

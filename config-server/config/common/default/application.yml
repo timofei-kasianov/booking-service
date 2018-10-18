@@ -15,6 +15,10 @@ management:
         - "info"
         - "health"
 
-timofei:
-  test:
-    message: "Message from the config server (COMMON)"
+logging:
+  level:
+    root: info
+  path: logs
+  file: ${logging.path}/${spring.application.name}/log.log
+  pattern:
+    file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36}.%M - %msg%n"

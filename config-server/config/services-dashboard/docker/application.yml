@@ -1,6 +1,12 @@
 server:
-  port: 8082
+  port: 8080
 
 turbine:
   app-config: api-gateway, accommodation-service, reservation-service, geo-location-service
   cluster-name-expression: new String("default")
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

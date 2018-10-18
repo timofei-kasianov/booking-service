@@ -1,0 +1,131 @@
+version: '3'
+services:
+
+  config-server:
+    container_name: booking-config-server
+    build:
+      context: ../config-server
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ../config-server/config:/config-server-app-folder/config:ro
+    ports:
+      - "8888"
+    networks:
+      - booking-system-web
+
+  service-registry:
+    container_name: booking-service-registry
+    build:
+      context: ../service-registry
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080"
+    depends_on:
+      - config-server
+    networks:
+      - booking-system-web
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      while ! (wget booking-config-server:8888/service-registry/docker); do sleep 5; echo 'Waiting for config-server to start-up...'; done;
+      java -Dspring.profiles.active=docker -jar /service-registry-app-folder/service-registry.jar
+      "
+
+  api-gateway:
+    container_name: booking-api-gateway
+    build:
+      context: ../api-gateway
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080"
+    networks:
+      - booking-system-web
+    depends_on:
+      - config-server
+      - service-registry
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      while ! (wget booking-config-server:8888/api-gateway/docker); do sleep 5; echo 'Waiting for config-server to start-up...'; done;
+      java -Dspring.profiles.active=docker -jar /api-gateway-app-folder/api-gateway.jar
+      "
+
+  geo-location-service:
+    container_name: booking-geo-location-service
+    build:
+      context: ../geo-location-service
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080"
+    networks:
+      - booking-system-web
+    depends_on:
+      - config-server
+      - service-registry
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      while ! (wget booking-config-server:8888/geo-location-service/docker); do sleep 5; echo 'Waiting for config-server to start-up...'; done;
+      java -Dspring.profiles.active=docker -jar /geo-location-service-app-folder/geo-location-service.jar
+      "
+
+  reservation-service:
+    container_name: booking-reservation-service
+    build:
+      context: ../reservation-service
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080"
+    networks:
+      - booking-system-web
+    depends_on:
+      - config-server
+      - service-registry
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      while ! (wget booking-config-server:8888/geo-location-service/docker); do sleep 5; echo 'Waiting for config-server to start-up...'; done;
+      java -Dspring.profiles.active=docker -jar /reservation-service-app-folder/reservation-service.jar
+      "
+
+  accommodation-service:
+    container_name: booking-accommodation-service
+    build:
+      context: ../accommodation-service
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080"
+    networks:
+      - booking-system-web
+    depends_on:
+      - config-server
+      - service-registry
+      - reservation-service
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      while ! (wget booking-config-server:8888/geo-location-service/docker); do sleep 5; echo 'Waiting for config-server to start-up...'; done;
+      java -Dspring.profiles.active=docker -jar /accommodation-service-app-folder/accommodation-service.jar
+      "
+
+  services-dashboard:
+    container_name: booking-services-dashboard
+    build:
+      context: ../services-dashboard
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080"
+    networks:
+      - booking-system-web
+    depends_on:
+      - config-server
+      - service-registry
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      while ! (wget booking-config-server:8888/geo-location-service/docker); do sleep 5; echo 'Waiting for config-server to start-up...'; done;
+      java -Dspring.profiles.active=docker -jar /services-dashboard-app-folder/services-dashboard.jar
+      "
+
+networks:
+  booking-system-web:

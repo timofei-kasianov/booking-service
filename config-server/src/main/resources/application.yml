@@ -2,25 +2,24 @@ server:
   port: 8888
 
 spring:
-  profiles:
-    active: native
   application:
     name: config-server
+  profiles:
+    active: native
   cloud:
     config:
       server:
         native:
           search-locations:
-          - "file://${user.home}/work/bookingservice/config-server/config/common/"
-          - "file://${user.home}/work/bookingservice/config-server/config/{application}/"
-          - "file://${user.home}/work/bookingservice/config-server/config/{application}/{profile}/"
+          - "file://${config.folder.location}/common/{profile}/"
+          - "file://${config.folder.location}/{application}/{profile}/"
 
 eureka:
   client:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:8081/eureka
+      defaultZone: http://localhost:8081/eureka, http://booking-service-registry:8080/eureka
 
 management:
   endpoints:

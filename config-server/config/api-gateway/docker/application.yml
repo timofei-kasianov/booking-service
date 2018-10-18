@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+zuul:
+  prefix: /api
+  routes:
+    accommodations:
+      path: /accommodations/**
+      serviceId: ACCOMMODATION-SERVICE
+      stripPrefix: false
+    reservations:
+      path: /reservations/**
+      serviceId: RESERVATION-SERVICE
+      stripPrefix: false
+    geo-location:
+      path: /geo/**
+      serviceId: GEO-LOCATION-SERVICE
+      stripPrefix: false
+    search:
+      path: /search
+      url: http://google.com
+
+# common configuration for all ribbon clients
+ribbon:
+  ReadTimeout: 3000
+  ConnectTimeout: 3000
+
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 12500
