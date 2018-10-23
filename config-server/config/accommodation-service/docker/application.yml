@@ -4,7 +4,8 @@ server:
 spring:
   data:
     mongodb:
-      host: host.docker.internal
+# My current IP, should be publicly available mongo server (for tests purpose only)
+      host: 10.93.90.193
       port: 27017
       database: accommodations
 

@@ -3,7 +3,8 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://host.docker.internal:3306/geo_location_service?createDatabaseIfNotExist=true
+# My current IP, should be publicly available mysql server (for tests purpose only)
+    url: jdbc:mysql://10.93.90.193:3306/geo_location_service?createDatabaseIfNotExist=true
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver

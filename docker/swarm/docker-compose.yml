@@ -2,11 +2,9 @@ version: '3.2'
 services:
 
   config-server:
-    build:
-      context: ../config-server
-      dockerfile: docker/Dockerfile
+    image: timofeikasianov/test:booking-config-server
     ports:
-      - "8888"
+      - "8888:8888"
     networks:
       - booking-system-web
     volumes:
@@ -15,11 +13,9 @@ services:
         target: /app/logs
 
   service-registry:
-    build:
-      context: ../service-registry
-      dockerfile: docker/Dockerfile
+    image: timofeikasianov/test:booking-service-registry
     ports:
-      - "8080"
+      - "8088:8080"
     depends_on:
       - config-server
     networks:
@@ -36,11 +32,9 @@ services:
       "
 
   api-gateway:
-    build:
-      context: ../api-gateway
-      dockerfile: docker/Dockerfile
+    image: timofeikasianov/test:booking-api-gateway
     ports:
-      - "8080"
+      - "8080:8080"
     networks:
       - booking-system-web
     volumes:
@@ -58,11 +52,9 @@ services:
       "
 
   geo-location-service:
-    build:
-      context: ../geo-location-service
-      dockerfile: docker/Dockerfile
+    image: timofeikasianov/test:booking-geo-location-service
     ports:
-      - "8080"
+      - "8081:8080"
     networks:
       - booking-system-web
     volumes:
@@ -80,11 +72,13 @@ services:
       "
 
   reservation-service:
-    build:
-      context: ../reservation-service
-      dockerfile: docker/Dockerfile
+    image: timofeikasianov/test:booking-reservation-service
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
     ports:
-      - "8080"
+      - "8082:8080"
     networks:
       - booking-system-web
     volumes:
@@ -102,11 +96,13 @@ services:
       "
 
   accommodation-service:
-    build:
-      context: ../accommodation-service
-      dockerfile: docker/Dockerfile
+    image: timofeikasianov/test:booking-accommodation-service
+    deploy:
+          replicas: 3
+          restart_policy:
+            condition: on-failure
     ports:
-      - "8080"
+      - "8083:8080"
     networks:
       - booking-system-web
     volumes:
@@ -125,11 +121,9 @@ services:
       "
 
   services-dashboard:
-    build:
-      context: ../services-dashboard
-      dockerfile: docker/Dockerfile
+    image: timofeikasianov/test:booking-services-dashboard
     ports:
-      - "8080"
+      - "8084:8080"
     networks:
       - booking-system-web
     volumes:
@@ -146,8 +140,20 @@ services:
       java -Dspring.profiles.active=docker -jar /app/services-dashboard.jar
       "
 
-volumes:
-  logs:
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8085:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - booking-system-web
 
 networks:
   booking-system-web:
+
+volumes:
+  logs:
